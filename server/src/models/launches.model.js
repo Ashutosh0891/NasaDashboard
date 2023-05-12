@@ -72,11 +72,14 @@ async function loadLaunchData() {
 }
 
 async function findLaunch(filter) {
-    return await launchesDatabase.findOne(filter)
-}
-async function existsLaunchWithId(launchId) {
-    return await findLaunch(launchId)
-}
+    return await launchesDatabase.findOne(filter);
+  }
+  
+  async function existsLaunchWithId(launchId) {
+    return await findLaunch({
+      flightNumber: launchId,
+    });
+  }
 
 async function getAllLaunches(skip,limit) {
     return await launchesDatabase
@@ -127,13 +130,14 @@ async function scheduleNewLaunches(launch) {
 
 async function abortLaunchById(launchId) {
     const aborted = await launchesDatabase.updateOne({
-        flightNumber: launchId
+      flightNumber: launchId,
     }, {
-        upcoming: false,
-        success: false
-    })
-    return aborted.modifiedCount === 1
-}
+      upcoming: false,
+      success: false,
+    });
+  
+    return aborted.modifiedCount === 1;
+  }
 
 module.exports = {
     existsLaunchWithId,
